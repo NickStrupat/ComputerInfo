@@ -19,8 +19,8 @@ namespace NickStrupat
 
         private static UInt64 GetBytesFromLine(String token)
         {
-            var memTotalLine = GetProcMemInfoLines().FirstOrDefault(x => x.StartsWith(token));
-            if (memTotalLine.EndsWith(KbToken) && UInt64.TryParse(memTotalLine.Substring(0, memTotalLine.Length - KbToken.Length), out var memKb))
+            var memTotalLine = GetProcMemInfoLines().FirstOrDefault(x => x.StartsWith(token))?.Substring(token.Length);
+            if (memTotalLine != null && memTotalLine.EndsWith(KbToken) && UInt64.TryParse(memTotalLine.Substring(0, memTotalLine.Length - KbToken.Length), out var memKb))
                 return memKb * 1024;
             throw new Exception();
         }
