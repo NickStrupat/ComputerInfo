@@ -13,66 +13,60 @@ namespace NickStrupat
 
         public static String OSFullName = "Microsoft " + Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion").GetValue("ProductName");
 
-        private static InternalMemoryStatus m_InternalMemoryStatus;
-        private static InternalMemoryStatus MemoryStatus {
-            get {
-                if (m_InternalMemoryStatus == null)
-                    m_InternalMemoryStatus = new InternalMemoryStatus();
-                return m_InternalMemoryStatus;
-            }
-        }
+        private static InternalMemoryStatus internalMemoryStatus;
+        private static InternalMemoryStatus MemoryStatus => internalMemoryStatus ?? (internalMemoryStatus = new InternalMemoryStatus());
 
         private class InternalMemoryStatus
         {
-            private bool m_IsOldOS;
-            private MEMORYSTATUS m_MemoryStatus;
-            private MEMORYSTATUSEX m_MemoryStatusEx;
+            private readonly Boolean isOldOS;
+            private MEMORYSTATUS memoryStatus;
+            private MEMORYSTATUSEX memoryStatusEx;
 
             internal InternalMemoryStatus()
             {
-                m_IsOldOS = Environment.OSVersion.Version.Major < 5;
+                isOldOS = Environment.OSVersion.Version.Major < 5;
             }
 
-            internal ulong TotalPhysicalMemory {
+            internal UInt64 TotalPhysicalMemory {
                 get {
                     Refresh();
-                    return !m_IsOldOS ? m_MemoryStatusEx.ullTotalPhys : m_MemoryStatus.dwTotalPhys;
+                    return !isOldOS ? memoryStatusEx.ullTotalPhys : memoryStatus.dwTotalPhys;
                 }
             }
 
-            internal ulong AvailablePhysicalMemory {
+            internal UInt64 AvailablePhysicalMemory {
                 get {
                     Refresh();
-                    return !m_IsOldOS ? m_MemoryStatusEx.ullAvailPhys : m_MemoryStatus.dwAvailPhys;
+                    return !isOldOS ? memoryStatusEx.ullAvailPhys : memoryStatus.dwAvailPhys;
                 }
             }
 
-            internal ulong TotalVirtualMemory {
+            internal UInt64 TotalVirtualMemory {
                 get {
                     Refresh();
-                    return !m_IsOldOS ? m_MemoryStatusEx.ullTotalVirtual : m_MemoryStatus.dwTotalVirtual;
+                    return !isOldOS ? memoryStatusEx.ullTotalVirtual : memoryStatus.dwTotalVirtual;
                 }
             }
 
-            internal ulong AvailableVirtualMemory {
+            internal UInt64 AvailableVirtualMemory {
                 get {
                     Refresh();
-                    return !m_IsOldOS ? m_MemoryStatusEx.ullAvailVirtual : m_MemoryStatus.dwAvailVirtual;
+                    return !isOldOS ? memoryStatusEx.ullAvailVirtual : memoryStatus.dwAvailVirtual;
                 }
             }
 
             private void Refresh()
             {
-                if (m_IsOldOS)
+                if (isOldOS)
                 {
-                    m_MemoryStatus = new MEMORYSTATUS();
-                    GlobalMemoryStatus(ref m_MemoryStatus);
+                    memoryStatus = new MEMORYSTATUS();
+                    GlobalMemoryStatus(ref memoryStatus);
                 }
                 else
                 {
-                    m_MemoryStatusEx = new MEMORYSTATUSEX();
-                    m_MemoryStatusEx.Init();
-                    if (!GlobalMemoryStatusEx(ref m_MemoryStatusEx))
+                    memoryStatusEx = new MEMORYSTATUSEX();
+                    memoryStatusEx.Init();
+                    if (!GlobalMemoryStatusEx(ref memoryStatusEx))
                         throw new Win32Exception("Could not obtain memory information due to internal error.");
                 }
             }
@@ -83,35 +77,35 @@ namespace NickStrupat
 
         [DllImport("Kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+        internal static extern Boolean GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
         internal struct MEMORYSTATUS
         {
-            internal uint dwLength;
-            internal uint dwMemoryLoad;
-            internal uint dwTotalPhys;
-            internal uint dwAvailPhys;
-            internal uint dwTotalPageFile;
-            internal uint dwAvailPageFile;
-            internal uint dwTotalVirtual;
-            internal uint dwAvailVirtual;
+            internal UInt32 dwLength;
+            internal UInt32 dwMemoryLoad;
+            internal UInt32 dwTotalPhys;
+            internal UInt32 dwAvailPhys;
+            internal UInt32 dwTotalPageFile;
+            internal UInt32 dwAvailPageFile;
+            internal UInt32 dwTotalVirtual;
+            internal UInt32 dwAvailVirtual;
         }
 
         internal struct MEMORYSTATUSEX
         {
-            internal uint dwLength;
-            internal uint dwMemoryLoad;
-            internal ulong ullTotalPhys;
-            internal ulong ullAvailPhys;
-            internal ulong ullTotalPageFile;
-            internal ulong ullAvailPageFile;
-            internal ulong ullTotalVirtual;
-            internal ulong ullAvailVirtual;
-            internal ulong ullAvailExtendedVirtual;
+            internal UInt32 dwLength;
+            internal UInt32 dwMemoryLoad;
+            internal UInt64 ullTotalPhys;
+            internal UInt64 ullAvailPhys;
+            internal UInt64 ullTotalPageFile;
+            internal UInt64 ullAvailPageFile;
+            internal UInt64 ullTotalVirtual;
+            internal UInt64 ullAvailVirtual;
+            internal UInt64 ullAvailExtendedVirtual;
 
             internal void Init()
             {
-                dwLength = checked((uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX)));
+                dwLength = checked((UInt32)Marshal.SizeOf(typeof(MEMORYSTATUSEX)));
             }
         }
     }

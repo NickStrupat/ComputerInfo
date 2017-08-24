@@ -19,6 +19,6 @@ namespace NickStrupat
         }
 
         [DllImport("libc")]
-        private static extern int sysctlbyname(string name, out IntPtr oldp, ref IntPtr oldlenp, IntPtr newp, IntPtr newlen);
+        private static extern Int32 sysctlbyname(String name, out IntPtr oldp, ref IntPtr oldlenp, IntPtr newp, IntPtr newlen);
     }
 }
