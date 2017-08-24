@@ -1,14 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace NickStrupat
 {
     internal static class Windows {
-        public static UInt64 TotalPhysicalMemory => MemoryStatus.TotalPhysicalMemory;
-        public static UInt64 AvailablePhysicalMemory => MemoryStatus.AvailablePhysicalMemory;
-        public static UInt64 TotalVirtualMemory => MemoryStatus.TotalVirtualMemory;
-        public static UInt64 AvailableVirtualMemory => MemoryStatus.AvailableVirtualMemory;
+        public static UInt64 GetTotalPhysicalMemory()     => MemoryStatus.TotalPhysicalMemory;
+        public static UInt64 GetAvailablePhysicalMemory() => MemoryStatus.AvailablePhysicalMemory;
+        public static UInt64 GetTotalVirtualMemory()      => MemoryStatus.TotalVirtualMemory;
+        public static UInt64 GetAvailableVirtualMemory()  => MemoryStatus.AvailableVirtualMemory;
+
+        public static String OSFullName = "Microsoft " + Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion").GetValue("ProductName");
 
         private static InternalMemoryStatus m_InternalMemoryStatus;
         private static InternalMemoryStatus MemoryStatus {
@@ -18,8 +21,6 @@ namespace NickStrupat
                 return m_InternalMemoryStatus;
             }
         }
-
-        public static String OSFullName => null;
 
         private class InternalMemoryStatus
         {

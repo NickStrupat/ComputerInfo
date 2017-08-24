@@ -5,20 +5,16 @@ using System.Linq;
 namespace NickStrupat
 {
     internal static class Linux {
-        public static UInt64 TotalPhysicalMemory => GetBytesFromLine(MemTotalToken);
-        public static UInt64 AvailablePhysicalMemory => GetBytesFromLine(MemFreeToken);
+        public static UInt64 GetTotalPhysicalMemory()     => GetBytesFromLine("MemTotal:");
+        public static UInt64 GetAvailablePhysicalMemory() => GetBytesFromLine("MemAvailable:");
+        public static UInt64 GetTotalVirtualMemory()      => throw new NotImplementedException();
+        public static UInt64 GetAvailableVirtualMemory()  => throw new NotImplementedException();
 
-        public static UInt64 TotalVirtualMemory => throw new NotImplementedException();
-        public static UInt64 AvailableVirtualMemory => throw new NotImplementedException();
-
-        private static string[] GetProcMemInfoLines() => File.ReadAllLines("/proc/meminfo");
-
-        private const string MemTotalToken = "MemTotal:";
-        private const string MemFreeToken = "MemFree:";
-        private const string KbToken = "kB";
+        private static String[] GetProcMemInfoLines() => File.ReadAllLines("/proc/meminfo");
 
         private static UInt64 GetBytesFromLine(String token)
         {
+            const String KbToken = "kB";
             var memTotalLine = GetProcMemInfoLines().FirstOrDefault(x => x.StartsWith(token))?.Substring(token.Length);
             if (memTotalLine != null && memTotalLine.EndsWith(KbToken) && UInt64.TryParse(memTotalLine.Substring(0, memTotalLine.Length - KbToken.Length), out var memKb))
                 return memKb * 1024;
