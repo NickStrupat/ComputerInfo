@@ -10,7 +10,16 @@ namespace Testing
         {
             var ci = new ComputerInfo();
             foreach (var prop in typeof(ComputerInfo).GetProperties(BindingFlags.Instance | BindingFlags.Public))
-                Console.WriteLine(prop.Name + ":\t" + prop.GetValue(ci));
+            {
+                String value;
+                try {
+                    value = prop.GetValue(ci).ToString();
+                }
+                catch (Exception ex) {
+                    value = ex.GetType().Name;
+                }
+                Console.WriteLine(prop.Name + ":\t" + value);
+            }
         }
     }
 }
