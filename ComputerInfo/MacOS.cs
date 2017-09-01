@@ -10,11 +10,11 @@ namespace NickStrupat
         public static UInt64 GetTotalVirtualMemory()      => throw new NotImplementedException();
         public static UInt64 GetAvailableVirtualMemory()  => throw new NotImplementedException();
 
+        private static IntPtr SizeOfLineSize = (IntPtr)IntPtr.Size;
+
         public static UInt64 GetSysCtlIntegerByName(String name)
         {
-            IntPtr lineSize;
-            IntPtr sizeOfLineSize = (IntPtr) IntPtr.Size;
-            sysctlbyname(name, out lineSize, ref sizeOfLineSize, IntPtr.Zero, IntPtr.Zero);
+            sysctlbyname(name, out var lineSize, ref SizeOfLineSize, IntPtr.Zero, IntPtr.Zero);
             return (UInt64) lineSize.ToInt64();
         }
 

@@ -1,11 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerInfo", "ComputerInfo\ComputerInfo.csproj", "{E3119809-4CD7-4BFB-B2CC-947F99C43C97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerInfo", "ComputerInfo\ComputerInfo.csproj", "{E3119809-4CD7-4BFB-B2CC-947F99C43C97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{FDAD1032-C2D8-453D-A92F-E3BC2C7C6DC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{FDAD1032-C2D8-453D-A92F-E3BC2C7C6DC5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35FAC14B-8177-49A0-BCA8-47A4948AAB54}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
