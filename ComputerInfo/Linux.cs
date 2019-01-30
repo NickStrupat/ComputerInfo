@@ -6,9 +6,9 @@ namespace NickStrupat
 {
     internal static class Linux {
         public static UInt64 GetTotalPhysicalMemory()     => GetBytesFromLine("MemTotal:");
-        public static UInt64 GetAvailablePhysicalMemory() => GetBytesFromLine("MemAvailable:");
-        public static UInt64 GetTotalVirtualMemory()      => throw new NotImplementedException();
-        public static UInt64 GetAvailableVirtualMemory()  => throw new NotImplementedException();
+        public static UInt64 GetAvailablePhysicalMemory() => GetBytesFromLine("MemFree:");
+        public static UInt64 GetTotalVirtualMemory()      => GetBytesFromLine("SwapTotal:");
+        public static UInt64 GetAvailableVirtualMemory()  => GetBytesFromLine("SwapFree:");
 
         private static String[] GetProcMemInfoLines() => File.ReadAllLines("/proc/meminfo");
 
