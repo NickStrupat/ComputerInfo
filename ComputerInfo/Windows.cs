@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
@@ -11,7 +13,22 @@ namespace NickStrupat
         public static UInt64 GetTotalVirtualMemory()      => MemoryStatus.TotalVirtualMemory;
         public static UInt64 GetAvailableVirtualMemory()  => MemoryStatus.AvailableVirtualMemory;
 
-        public static String OSFullName = "Microsoft " + Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion").GetValue("ProductName");
+        static Windows() {
+            using var process = new Process();
+            process.StartInfo.FileName = $"wmic";
+            process.StartInfo.Arguments = $"os get /format:list";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
+            var output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+            const string captionLabel = "Caption=";
+            var captionIndex = output.IndexOf(captionLabel) + captionLabel.Length;
+            var newLineIndex = output.IndexOf("\r\n", captionIndex);
+            OSFullName = output.Substring(captionIndex, newLineIndex - captionIndex - 1);
+        }
+
+        public static readonly String OSFullName;
 
         private static InternalMemoryStatus internalMemoryStatus;
         private static InternalMemoryStatus MemoryStatus => internalMemoryStatus ?? (internalMemoryStatus = new InternalMemoryStatus());
